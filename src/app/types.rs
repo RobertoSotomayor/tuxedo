@@ -137,16 +137,23 @@ impl FromStr for Density {
 }
 
 #[derive(Debug, Clone, Default)]
+use chrono::NaiveDate;
+
 pub struct Filter {
     pub project: Option<String>,
     pub context: Option<String>,
+    pub due: Option<NaiveDate>,
     pub search: String,
 }
 
 impl Filter {
     /// True when at least one of project / context / search is non-empty.
     pub fn has_any(&self) -> bool {
-        self.project.is_some() || self.context.is_some() || !self.search.is_empty()
+    self.project.is_some()
+        || self.context.is_some()
+        || self.due.is_some()
+        || !self.search.is_empty()
+    }
     }
 
     /// The active `+project` / `@context` tags as an add-prompt prefix, with
@@ -161,9 +168,10 @@ impl Filter {
 
     /// Drop every filter component back to its empty state.
     pub fn clear(&mut self) {
-        self.project = None;
-        self.context = None;
-        self.search.clear();
+    self.project = None;
+    self.context = None;
+    self.due = None;
+    self.search.clear();
     }
 }
 
